@@ -143,20 +143,19 @@
                 let novoTotal = 0;
 
                 if (categoriaAtiva === 'favorite') {
-                    // Busca todos os favoritos salvos no localStorage diretamente da API local
                     const favs = obterFavoritos();
                     if (favs.length > 0) {
-                        // Fazemos uma requisição pedindo um bloco grande para filtrar os tokens favoritados
-                        const resposta = await fetch(`http://localhost:3000/api/market/items?page=0&category=all&size=1000`);
+                        // URL CORRIGIDA PARA ROTA RELATIVA
+                        const resposta = await fetch(`/api/market/items?page=0&category=all&size=1000`);
                         const dados = await resposta.json();
                         novosItens = (dados.results || []).filter(i => favs.includes(String(i.tokenId)));
                         novoTotal = novosItens.length;
                     }
                 } else if (categoriaAtiva === 'interested') {
-                    // Busca itens cujo nome dê match parcial com os itens marcados como interesse
                     const ints = obterInteressados().map(n => n.toLowerCase());
                     if (ints.length > 0) {
-                        const resposta = await fetch(`http://localhost:3000/api/market/items?page=0&category=all&size=1000`);
+                        // URL CORRIGIDA PARA ROTA RELATIVA
+                        const resposta = await fetch(`/api/market/items?page=0&category=all&size=1000`);
                         const dados = await resposta.json();
                         novosItens = (dados.results || []).filter(i => {
                             const nomeReal = (i.name || '').toLowerCase();
@@ -165,8 +164,8 @@
                         novoTotal = novosItens.length;
                     }
                 } else {
-                    // Comportamento normal para as categorias oficiais (Headgear, Weapon, etc.)
-                    const resposta = await fetch(`http://localhost:3000/api/market/items?page=${paginaAtual}&category=${categoriaAtiva}&name=${encodeURIComponent(termoBusca)}`);
+                    // URL CORRIGIDA PARA ROTA RELATIVA
+                    const resposta = await fetch(`/api/market/items?page=${paginaAtual}&category=${categoriaAtiva}&name=${encodeURIComponent(termoBusca)}`);
                     const dados = await resposta.json();
                     novosItens = dados.results || [];
                     novoTotal = dados.total || 0;
