@@ -197,13 +197,13 @@ async function sincronizarComMaxion() {
             };
 
             const resposta = await axios.post(
-                'https://apps.maxion.gg/roverse-america/api/mavis/graphql',
+                'https://apps.maxion.gg/api/mavis/graphql', // <-- URL ATUALIZADA
                 graphqlQuery,
                 {
                     headers: {
                         'Content-Type': 'application/json',
                         'Origin': 'https://apps.maxion.gg',
-                        'Referer': 'https://apps.maxion.gg/roverse-america',
+                        'Referer': 'https://apps.maxion.gg/',
                         'User-Agent': 'Mozilla/5.0'
                     },
                     timeout: 15000
