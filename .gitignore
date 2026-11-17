@@ -2,4 +2,5 @@ node_modules/
 market.db
 market.db-shm
 market.db-wal
+teste.js
 .env
