@@ -1,0 +1,14 @@
+{
+  "name": "ragnarok-landverse-market",
+  "version": "1.0.0",
+  "description": "Replica de alta performance do Marketplace Ragnarok Landverse",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "axios": "^1.6.8",
+    "express": "^4.19.2"
+  }
+}

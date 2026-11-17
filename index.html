@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ragnarok Landverse - Market Oficial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f1115] text-slate-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Topo / Header de Busca -->
+    <header class="bg-[#181b22] border-b border-slate-800 p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-md">
+        <div class="flex items-center gap-3">
+            <span class="text-amber-400 font-bold text-lg tracking-wider">RAGNAROK LANDVERSE</span>
+            <span class="bg-slate-800 text-slate-400 text-xs px-2 py-1 rounded">America Server</span>
+        </div>
+
+        <div class="w-full md:w-96 relative">
+            <input type="text" id="searchInput" onkeyup="aplicarFiltros()" placeholder="Search by name..." class="w-full bg-[#111318] border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-sm">
+        </div>
+    </header>
+
+    <div class="flex flex-1">
+        <!-- Menu Lateral com Categorias Oficiais -->
+        <aside class="w-64 bg-[#14171f] border-r border-slate-800 p-4 hidden md:block select-none overflow-y-auto">
+            <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Explore</h3>
+            <ul class="space-y-1 text-sm">
+                <li><button onclick="mudarCategoria('all', this)" data-cat="all" class="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-slate-800/50 cat-btn transition">🔥 Recent</button></li>
+                <li><button onclick="mudarCategoria('favorite', this)" data-cat="favorite" class="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-slate-800/50 cat-btn transition">❤️ Favorites</button></li>
+                <li><button onclick="mudarCategoria('interested', this)" data-cat="interested" class="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-slate-800/50 cat-btn transition">👁️ Interested</button></li>
+            </ul>
+
+            <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-6 mb-3">Equipment</h3>
+            <ul class="space-y-1 text-sm text-slate-400">
+                <li><button onclick="mudarCategoria('Headgear', this)" data-cat="Headgear" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800/50 cat-btn transition">🛡️ Headgears</button></li>
+                <li><button onclick="mudarCategoria('Weapon', this)" data-cat="Weapon" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800/50 cat-btn transition">⚔️ Weapons</button></li>
+                <li><button onclick="mudarCategoria('Armor', this)" data-cat="Armor" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800/50 cat-btn transition">🥋 Armors (Armor/Garment/Shoes/Acc)</button></li>
+                <li><button onclick="mudarCategoria('Card', this)" data-cat="Card" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800/50 cat-btn transition">🃏 Cards</button></li>
+                <li><button onclick="mudarCategoria('Costume', this)" data-cat="Costume" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800/50 cat-btn transition">👑 Costumes</button></li>
+                <li><button onclick="mudarCategoria('Shadowgear', this)" data-cat="Shadowgear" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800/50 cat-btn transition">👥 Shadow Gears</button></li>
+                <li><button onclick="mudarCategoria('Soul_of_class', this)" data-cat="Soul_of_class" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800/50 cat-btn transition">🔮 Soul of Class</button></li>
+                <li><button onclick="mudarCategoria('Usable', this)" data-cat="Usable" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800/50 cat-btn transition">🧪 Usable Item</button></li>
+                <li><button onclick="mudarCategoria('Etc', this)" data-cat="Etc" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800/50 cat-btn transition">📦 ETC Items</button></li>
+            </ul>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="flex-1 p-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 id="tituloCategoria" class="text-xl font-bold text-white">Marketplace Listings (Recent)</h2>
+
+                <div class="flex items-center gap-2 text-sm text-slate-400">
+                    <span>Página</span>
+                    <select id="selectPaginaTopo" onchange="mudarPaginaDireta(this.value)" class="bg-[#181b22] border border-slate-700 rounded px-2 py-1 text-white focus:outline-none focus:border-amber-400 cursor-pointer">
+                        <option value="0">1</option>
+                    </select>
+                    <span id="totalPaginasTopo">de 1</span>
+                </div>
+            </div>
+
+            <div id="gridItens" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 transition-opacity duration-150">
+                <div class="col-span-full text-center py-24 text-amber-400/80 animate-pulse flex flex-col items-center justify-center gap-3">
+                    <svg class="animate-spin h-8 w-8 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-base font-medium">Buscando e sincronizando itens do servidor, por favor aguarde...</span>
+                </div>
+            </div>
+
+            <!-- Controles de Paginação Inferior -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mt-8 pt-4 border-t border-slate-800 gap-4">
+                <button onclick="mudarPagina(-1)" id="btnAnterior" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm disabled:opacity-40 disabled:cursor-not-allowed transition">
+                    ← Página Anterior
+                </button>
+
+                <div class="flex items-center gap-2 text-sm text-slate-300">
+                    <span>Página</span>
+                    <select id="selectPaginaBaixo" onchange="mudarPaginaDireta(this.value)" class="bg-[#181b22] border border-slate-700 rounded px-2 py-1 text-white focus:outline-none focus:border-amber-400 cursor-pointer">
+                        <option value="0">1</option>
+                    </select>
+                    <span id="totalPaginasBaixo">de 1</span>
+                    <span id="pageInfo" class="text-slate-500 ml-2 text-xs"></span>
+                </div>
+
+                <button onclick="mudarPagina(1)" id="btnProxima" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm disabled:opacity-40 disabled:cursor-not-allowed transition">
+                    Próxima Página →
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let todosOsItens = [];
+        let ultimoSnapshotJson = '';
+        let paginaAtual = parseInt(localStorage.getItem('landverse_page')) || 0;
+        let categoriaAtiva = localStorage.getItem('landverse_category') || 'all';
+        const tamanhoPagina = 50;
+        let totalItensGeral = 0;
+        let tempoBusca = null;
+
+        function obterFavoritos() {
+            try { return JSON.parse(localStorage.getItem('landverse_favorites')) || []; } catch(e) { return []; }
+        }
+        function salvarFavoritos(favs) {
+            localStorage.setItem('landverse_favorites', JSON.stringify(favs));
+        }
+
+        function obterInteressados() {
+            try { return JSON.parse(localStorage.getItem('landverse_interested')) || []; } catch(e) { return []; }
+        }
+        function salvarInteressados(ints) {
+            localStorage.setItem('landverse_interested', JSON.stringify(ints));
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            destacarBotaoCategoriaAtiva();
+            carregarMercado(false);
+        });
+
+        function destacarBotaoCategoriaAtiva() {
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.getAttribute('data-cat') === categoriaAtiva) {
+                    btn.classList.remove('text-slate-400', 'hover:bg-slate-800/50');
+                    btn.classList.add('bg-amber-500/10', 'text-amber-400', 'font-medium');
+                    document.getElementById('tituloCategoria').innerText = `Marketplace Listings (${categoriaAtiva.toUpperCase()})`;
+                } else {
+                    btn.classList.remove('bg-amber-500/10', 'text-amber-400', 'font-medium');
+                    btn.classList.add('text-slate-400', 'hover:bg-slate-800/50');
+                }
+            });
+        }
+
+        async function carregarMercado(silencioso = false) {
+            try {
+                const grid = document.getElementById('gridItens');
+                if (!silencioso) {
+                    grid.style.opacity = '0.4';
+                }
+
+                const termoBusca = document.getElementById('searchInput').value.trim();
+                let novosItens = [];
+                let novoTotal = 0;
+
+                if (categoriaAtiva === 'favorite') {
+                    // Busca todos os favoritos salvos no localStorage diretamente da API local
+                    const favs = obterFavoritos();
+                    if (favs.length > 0) {
+                        // Fazemos uma requisição pedindo um bloco grande para filtrar os tokens favoritados
+                        const resposta = await fetch(`http://localhost:3000/api/market/items?page=0&category=all&size=1000`);
+                        const dados = await resposta.json();
+                        novosItens = (dados.results || []).filter(i => favs.includes(String(i.tokenId)));
+                        novoTotal = novosItens.length;
+                    }
+                } else if (categoriaAtiva === 'interested') {
+                    // Busca itens cujo nome dê match parcial com os itens marcados como interesse
+                    const ints = obterInteressados().map(n => n.toLowerCase());
+                    if (ints.length > 0) {
+                        const resposta = await fetch(`http://localhost:3000/api/market/items?page=0&category=all&size=1000`);
+                        const dados = await resposta.json();
+                        novosItens = (dados.results || []).filter(i => {
+                            const nomeReal = (i.name || '').toLowerCase();
+                            return ints.some(intName => nomeReal.includes(intName));
+                        });
+                        novoTotal = novosItens.length;
+                    }
+                } else {
+                    // Comportamento normal para as categorias oficiais (Headgear, Weapon, etc.)
+                    const resposta = await fetch(`http://localhost:3000/api/market/items?page=${paginaAtual}&category=${categoriaAtiva}&name=${encodeURIComponent(termoBusca)}`);
+                    const dados = await resposta.json();
+                    novosItens = dados.results || [];
+                    novoTotal = dados.total || 0;
+                }
+
+                if (novoTotal === 0 && !silencioso && categoriaAtiva !== 'favorite' && categoriaAtiva !== 'interested') {
+                    setTimeout(() => carregarMercado(false), 1000);
+                    return;
+                }
+
+                const maxPaginas = Math.ceil(novoTotal / tamanhoPagina) || 1;
+                if (paginaAtual >= maxPaginas) {
+                    paginaAtual = 0;
+                    localStorage.setItem('landverse_page', paginaAtual);
+                }
+
+                const novoSnapshot = JSON.stringify({ novosItens, novoTotal });
+                if (silencioso && novoSnapshot === ultimoSnapshotJson) {
+                    grid.style.opacity = '1';
+                    return;
+                }
+
+                ultimoSnapshotJson = novoSnapshot;
+                todosOsItens = novosItens;
+                totalItensGeral = novoTotal;
+
+                renderizarGrid(todosOsItens);
+                atualizarBotoesPaginacao();
+                grid.style.opacity = '1';
+            } catch (erro) {
+                console.error("Erro ao carregar:", erro);
+                document.getElementById('gridItens').style.opacity = '1';
+            }
+        }
+
+        function mudarCategoria(categoria, elemento) {
+            categoriaAtiva = categoria;
+            paginaAtual = 0;
+            ultimoSnapshotJson = '';
+            localStorage.setItem('landverse_category', categoriaAtiva);
+            localStorage.setItem('landverse_page', paginaAtual);
+            destacarBotaoCategoriaAtiva();
+            carregarMercado(false);
+        }
+
+        function aplicarFiltros() {
+            clearTimeout(tempoBusca);
+            tempoBusca = setTimeout(() => {
+                paginaAtual = 0;
+                localStorage.setItem('landverse_page', paginaAtual);
+                ultimoSnapshotJson = '';
+                carregarMercado(false);
+            }, 300);
+        }
+
+        function mudarPagina(direcao) {
+            paginaAtual += direcao;
+            if (paginaAtual < 0) paginaAtual = 0;
+            localStorage.setItem('landverse_page', paginaAtual);
+            ultimoSnapshotJson = '';
+            carregarMercado(false);
+        }
+
+        function mudarPaginaDireta(novaPagina) {
+            paginaAtual = parseInt(novaPagina);
+            localStorage.setItem('landverse_page', paginaAtual);
+            ultimoSnapshotJson = '';
+            carregarMercado(false);
+        }
+
+        function alternarFavorito(tokenId, event) {
+            if (event) event.stopPropagation();
+            let favs = obterFavoritos();
+            tokenId = String(tokenId);
+            if (favs.includes(tokenId)) {
+                favs = favs.filter(id => id !== tokenId);
+            } else {
+                favs.push(tokenId);
+            }
+            salvarFavoritos(favs);
+            renderizarGrid(todosOsItens);
+        }
+
+        function alternarInteresse(nomeItem, event) {
+            if (event) event.stopPropagation();
+            if (!nomeItem) return;
+            let ints = obterInteressados();
+            const nomeClean = nomeItem.toLowerCase().trim();
+            if (ints.map(n => n.toLowerCase()).includes(nomeClean)) {
+                ints = ints.filter(n => n.toLowerCase() !== nomeClean);
+            } else {
+                ints.push(nomeItem);
+            }
+            salvarInteressados(ints);
+            renderizarGrid(todosOsItens);
+        }
+
+        function atualizarBotoesPaginacao() {
+            const maxPaginas = Math.ceil(totalItensGeral / tamanhoPagina) || 1;
+            document.getElementById('pageInfo').innerText = `(Total: ${totalItensGeral} itens)`;
+            document.getElementById('btnAnterior').disabled = paginaAtual === 0;
+            document.getElementById('btnProxima').disabled = (paginaAtual + 1) >= maxPaginas;
+
+            ['selectPaginaTopo', 'selectPaginaBaixo'].forEach(idSelect => {
+                const select = document.getElementById(idSelect);
+                if (select) {
+                    let optionsHtml = '';
+                    for (let i = 0; i < maxPaginas; i++) {
+                        optionsHtml += `<option value="${i}" ${i === paginaAtual ? 'selected' : ''}>${i + 1}</option>`;
+                    }
+                    select.innerHTML = optionsHtml;
+                }
+            });
+
+            document.getElementById('totalPaginasTopo').innerText = `de ${maxPaginas}`;
+            document.getElementById('totalPaginasBaixo').innerText = `de ${maxPaginas}`;
+        }
+
+        function renderizarGrid(itens) {
+            const grid = document.getElementById('gridItens');
+
+            if (!itens || itens.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-20 text-slate-500">Nenhum item encontrado nesta categoria.</div>`;
+                return;
+            }
+
+            const favs = obterFavoritos();
+            const ints = obterInteressados().map(n => n.toLowerCase());
+
+            grid.innerHTML = itens.map(item => {
+                let precoExibido = '0.00';
+                if (item.orders && item.orders.length > 0 && item.orders[0].currentPrice) {
+                    const rawPrice = parseFloat(item.orders[0].currentPrice);
+                    precoExibido = (rawPrice / 1000000).toFixed(2);
+                } else if (item.minPrice) {
+                    const rawMin = parseFloat(item.minPrice);
+                    precoExibido = (rawMin / 1000000).toFixed(2);
+                }
+
+                const attributes = item.attributes || {};
+                const nftDetails = item.nft_details || {};
+
+                const itemId = attributes["Item ID"] ? attributes["Item ID"][0] : '';
+                const refineVal = attributes.Refine ? parseInt(attributes.Refine[0]) : 0;
+                const enchantGradeVal = (attributes.EnchantGrade !== undefined && attributes.EnchantGrade !== null) ? parseInt(attributes.EnchantGrade[0]) : 0;
+
+                const temRefino = refineVal > 0;
+                const refineText = temRefino ? `+${refineVal}` : '';
+                const cardSlotsCount = attributes["Card Slots"] ? parseInt(attributes["Card Slots"][0]) : (nftDetails.slots || 0);
+                const slotsText = cardSlotsCount > 0 ? ` [${cardSlotsCount}]` : '';
+                const nomeItemPuro = item.name || 'Desconhecido';
+                const nomeFormatado = `${refineText} ${nomeItemPuro}${slotsText}`.trim();
+
+                const isFav = favs.includes(String(item.tokenId));
+                const isInt = ints.includes(nomeItemPuro.toLowerCase());
+
+                const imagemItemUrl = item.image || 'https://apps.maxion.gg/roverse-america/images/icons/nft-hexagon.svg';
+                const iconeItemUrl = itemId ? `https://cdn.maxion.gg/landverse/image-latam/item/${itemId}.png` : 'https://apps.maxion.gg/roverse-america/images/icons/not-found.svg';
+
+                const gradeBorder = Math.min(Math.max(enchantGradeVal, 1), 4);
+                const borderBgUrl = temRefino
+                    ? `https://cdn.maxion.gg/landverse/marketplace-web/images/card-border/front/borders/refine/${gradeBorder}.webp`
+                    : `https://cdn.maxion.gg/landverse/marketplace-web/images/card-border/front/borders/none-refine/${gradeBorder}.webp`;
+
+                const exibirBanner = enchantGradeVal > 0;
+                const badgeTexto = `T${enchantGradeVal}`;
+
+                let encantamentosHtml = '';
+                for (let i = 0; i < 5; i++) {
+                    const optText = nftDetails[`option${i}_text`];
+                    if (optText) {
+                        let corTexto = 'text-slate-300';
+                        if (optText.includes('+')) {
+                            corTexto = 'text-emerald-400';
+                        } else if (optText.includes('-')) {
+                            corTexto = 'text-rose-400';
+                        }
+                        encantamentosHtml += `<div class="${corTexto} leading-tight">${optText}</div>`;
+                    }
+                }
+                if (!encantamentosHtml) {
+                    encantamentosHtml = '<div class="text-slate-500">No enchantments</div>';
+                }
+
+                let slotsHtml = '';
+                const maxSlots = Math.max(cardSlotsCount, 4);
+                for (let i = 0; i < maxSlots; i++) {
+                    const cardId = nftDetails[`card${i}`];
+                    const cardName = nftDetails[`card${i}_name`];
+
+                    if (cardId && cardId > 0) {
+                        const cardIconUrl = `https://cdn.maxion.gg/landverse/image-latam/item/${cardId}.png`;
+                        slotsHtml += `
+                            <div class="mb-1 flex items-center gap-1">
+                                <div class="relative h-4 w-4 aspect-square shrink-0">
+                                    <img alt="card slot" loading="lazy" src="${cardIconUrl}" class="w-full h-full object-contain" onerror="this.src='https://apps.maxion.gg/roverse-america/images/roverse/card/noslot.png'">
+                                </div>
+                                <span class="truncate font-medium capitalize text-[10px] text-slate-200">${cardName || 'Card ID: ' + cardId}</span>
+                            </div>
+                        `;
+                    } else {
+                        slotsHtml += `
+                            <div class="mb-1 flex items-center gap-1 opacity-30">
+                                <div class="relative h-4 w-4 aspect-square shrink-0">
+                                    <img alt="empty slot" loading="lazy" src="https://apps.maxion.gg/roverse-america/images/roverse/card/noslot.png" class="w-full h-full object-contain">
+                                </div>
+                                <span class="truncate font-medium capitalize text-[10px] text-slate-400">Empty Slot</span>
+                            </div>
+                        `;
+                    }
+                }
+
+                return `
+                    <div>
+                        <div class="group/sweep relative isolate cursor-pointer rounded-lg outline-none">
+                            <div class="h-max w-full rounded-lg pt-2 border border-slate-800 bg-[#14171f] shadow-xl flex flex-col justify-between relative">
+
+                                <!-- Botões de Ação Rápida (Favorito & Interessado) -->
+                                <div class="absolute top-2 right-2 z-30 flex items-center gap-1.5 bg-[#181b22]/80 backdrop-blur px-2 py-1 rounded-md border border-slate-700">
+                                    <button onclick="alternarFavorito('${item.tokenId}', event)" title="Favoritar Token" class="text-base hover:scale-110 transition">
+                                        ${isFav ? '❤️' : '🤍'}
+                                    </button>
+                                    <button onclick="alternarInteresse('${nomeItemPuro}', event)" title="Marcar Interesse no Item" class="text-base hover:scale-110 transition">
+                                        ${isInt ? '👁️' : '👁️‍🗨️'}
+                                    </button>
+                                </div>
+
+                                <!-- CONTAINER DO FLIPCARD OTIMIZADO -->
+                                <div class="group/flipcard relative aspect-[180/220] [perspective:1000px] w-full px-2 text-xs">
+                                    <div class="relative h-full w-full transition-transform duration-200 [transform-style:preserve-3d] group-hover/flipcard:[transform:rotateY(180deg)]">
+
+                                        <!-- ================= FRENTE DO CARD ================= -->
+                                        <div class="absolute inset-0 [backface-visibility:hidden]">
+                                            <div class="relative isolate aspect-[180/220] rounded-lg w-full h-full px-2">
+
+                                                <div class="absolute inset-x-[12%] top-[10%] bottom-[28%] bg-white rounded-md shadow-inner"></div>
+
+                                                <img alt="card-border" loading="lazy" src="${borderBgUrl}" class="absolute h-full w-full inset-0 object-contain pointer-events-none">
+
+                                                ${exibirBanner ? `
+                                                    <div class="absolute left-[3%] top-[4%] flex flex-col items-center w-[22%] z-25">
+                                                        <div class="relative w-12 h-[75px]">
+                                                            <div class="absolute inset-0">
+                                                                <img alt="Banner" loading="lazy" src="https://cdn.maxion.gg/landverse/marketplace-web/images/badges/banners/medium/${gradeBorder}.webp" class="object-cover h-full w-full">
+                                                            </div>
+                                                            <div class="absolute inset-0 flex flex-col items-center justify-center gap-1 text-base font-bold text-white pt-1">
+                                                                <img alt="enchant" loading="lazy" src="https://apps.maxion.gg/roverse-america/images/badges/enchant.webp" class="w-4 h-4">
+                                                                ${badgeTexto}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ` : ''}
+
+                                                ${temRefino ? `
+                                                    <div class="absolute right-[12%] top-[5%] z-10 flex items-center justify-center font-bold text-white text-base">
+                                                        +${refineVal}
+                                                    </div>
+                                                ` : ''}
+
+                                                <div class="absolute inset-x-0 top-[18%] bottom-[38%] z-10 flex items-center justify-center px-4">
+                                                    <img src="${imagemItemUrl}" loading="lazy" alt="${item.name}" class="max-h-full max-w-full object-contain" onerror="this.src='https://apps.maxion.gg/roverse-america/images/icons/nft-hexagon.svg'">
+                                                </div>
+
+                                                <div class="absolute bottom-[23%] left-[12%] z-10 flex h-[18%] items-center gap-1.5">
+                                                    ${Array(cardSlotsCount).fill(0).map((_, idx) => {
+                                                        const cId = nftDetails[`card${idx}`];
+                                                        const slotImg = cId ? `https://cdn.maxion.gg/landverse/image-latam/item/${cId}.png` : 'https://apps.maxion.gg/roverse-america/images/roverse/card/noslot.png';
+                                                        return `
+                                                            <div class="relative h-5 w-5 aspect-square p-0 bg-transparent border-0 shadow-none">
+                                                                <img alt="card slot" loading="lazy" src="${slotImg}" class="w-full h-full object-contain drop-shadow-md" onerror="this.src='https://apps.maxion.gg/roverse-america/images/roverse/card/noslot.png'">
+                                                            </div>
+                                                        `;
+                                                    }).join('')}
+                                                </div>
+
+                                                <div class="absolute bottom-[7%] left-[6%] right-[10%] z-10 flex h-[15%] items-center gap-2 text-white bg-transparent px-2.5 border-0">
+                                                    <img src="${iconeItemUrl}" loading="lazy" alt="" class="w-7 h-7 object-contain shrink-0 bg-transparent p-0.5 border-0" onerror="this.src='https://apps.maxion.gg/roverse-america/images/icons/not-found.svg'">
+                                                    <span title="${nomeFormatado}" class="truncate font-medium text-xs">${nomeFormatado}</span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!-- ================= VERSO DO CARD ================= -->
+                                        <div class="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                                            <div class="relative isolate aspect-[180/220] overflow-hidden rounded-lg border border-slate-700 bg-[#111318] w-full px-2.5 py-2 text-[10px] flex flex-col justify-between text-slate-200">
+
+                                                <div class="overflow-y-auto max-h-[175px] pr-1 space-y-2">
+                                                    <div>
+                                                        <h4 class="text-teal-400 font-bold text-[10px] uppercase mb-1 tracking-wide">Enchanted:</h4>
+                                                        <div class="space-y-1 text-[9px]">
+                                                            ${encantamentosHtml}
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <h4 class="text-amber-400 font-bold text-[10px] uppercase mb-1 tracking-wide">Slots:</h4>
+                                                        <div class="space-y-1">
+                                                            ${slotsHtml}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="text-[9px] text-slate-500 text-center border-t border-slate-800 pt-1">
+                                                    ID: ${item.tokenId}
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Rodapé com Preço -->
+                                <div class="relative flex w-full items-center justify-between p-2.5 bg-[#181b22] border-t border-slate-800 rounded-b-lg">
+                                    <span class="text-xs text-slate-400 font-mono">NFT: ${item.tokenId || '-'}</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <img alt="ion" loading="lazy" src="https://apps.maxion.gg/roverse-america/images/tokens/ion.svg" class="w-4 h-4">
+                                        <span class="price font-bold tabular-nums text-emerald-400">${precoExibido}</span>
+                                        <span class="text-xs font-semibold text-slate-300">ION</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
